@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "741661094563",
+    "project_id": "asteroids-2774a",
+    "storage_bucket": "asteroids-2774a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:741661094563:android:7091072b6c03fe2a4b0516",
+        "android_client_info": {
+          "package_name": "com.edjack.Asteroids"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBNJxbRnC16UDpDTk1QzDo862XTPcBHOc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:741661094563:android:d912b8156495749d4b0516",
+        "android_client_info": {
+          "package_name": "com.edjack.asteroids"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBNJxbRnC16UDpDTk1QzDo862XTPcBHOc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

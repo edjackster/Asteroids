@@ -1,0 +1,21 @@
+{
+  "PhysicsConfig": {
+    "MaxSpeed": 3.0,
+    "Acceleration": 0.0,
+    "Deceleration": 0.0,
+    "MaxAngularSpeed": 90.0,
+    "AngularAcceleration": 0.0,
+    "AngularDeceleration": 0.0,
+    "MinSpeed": 0.0,
+    "MinAngularSpeed": 0.0,
+    "LayerMask": {
+      "value": 192
+    },
+    "Bounciness": 1.5,
+    "Gravity": 1.0
+  },
+  "MinSpeed": 1.0,
+  "MaxSpeed": 2.0,
+  "MinRotationSpeed": 60.0,
+  "MaxRotationSpeed": 90.0
+}

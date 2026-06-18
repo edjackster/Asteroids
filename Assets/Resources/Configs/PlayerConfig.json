@@ -1,0 +1,33 @@
+{
+  "PhysicsConfig": {
+    "MaxSpeed": 4.0,
+    "Acceleration": 10.0,
+    "Deceleration": 5.0,
+    "MaxAngularSpeed": 270.0,
+    "AngularAcceleration": 360.0,
+    "AngularDeceleration": 400.0,
+    "MinSpeed": 0.0,
+    "MinAngularSpeed": 75.0,
+    "LayerMask": {
+      "value": 256
+    },
+    "Bounciness": 2.0,
+    "Gravity": 1.0
+  },
+  "Health": {
+    "MaxHealth": 3
+  },
+  "KnockbackDuration": 3.0,
+  "KnockbackGravityScale": 0.15,
+  "Gun": {
+    "GunCooldown": 0.2
+  },
+  "LaserAmmunition": {
+    "MaxChargesAmount": 3,
+    "LaserReloadTime": 3.0
+  },
+  "Laser": {
+    "LaserCooldown": 1.0,
+    "LaserDuration": 0.2
+  }
+}
