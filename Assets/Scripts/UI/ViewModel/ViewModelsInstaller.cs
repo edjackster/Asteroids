@@ -1,32 +1,35 @@
 using Zenject;
 
-public class ViewModelsInstaller : MonoInstaller
+namespace UI.ViewModel
 {
-    public override void InstallBindings()
+    public class ViewModelsInstaller : MonoInstaller
     {
-        Container
-            .BindInterfacesAndSelfTo<HealthViewModel>()
-            .AsSingle()
-            .NonLazy();
+        public override void InstallBindings()
+        {
+            Container
+                .BindInterfacesAndSelfTo<HealthViewModel>()
+                .AsSingle()
+                .NonLazy();
         
-        Container
-            .BindInterfacesAndSelfTo<LaserAmmoViewModel>()
-            .AsSingle()
-            .NonLazy();
+            Container
+                .BindInterfacesAndSelfTo<LaserAmmoViewModel>()
+                .AsSingle()
+                .NonLazy();
         
-        Container
-            .BindInterfacesAndSelfTo<ScoreViewModel>()
-            .AsSingle()
-            .NonLazy();
+            Container
+                .BindInterfacesAndSelfTo<ScoreViewModel>()
+                .AsSingle()
+                .NonLazy();
         
-        Container
-            .BindInterfacesAndSelfTo<PlayerParametersViewModel>()
-            .AsSingle()
-            .NonLazy();
+            Container
+                .BindInterfacesAndSelfTo<PlayerParametersViewModel>()
+                .AsSingle()
+                .NonLazy();
         
-        Container
-            .BindInterfacesAndSelfTo<GameOverViewModel>()
-            .AsSingle()
-            .NonLazy();
+            Container
+                .BindInterfacesAndSelfTo<GameOverViewModel>()
+                .AsSingle()
+                .NonLazy();
+        }
     }
 }

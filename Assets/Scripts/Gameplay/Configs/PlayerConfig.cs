@@ -1,13 +1,18 @@
 ﻿using System;
+using Core.Physics;
+using Tools.Runtime.Json;
 
-[Serializable]
-public class PlayerConfig: IConfig
+namespace Gameplay.Configs
 {
-    public readonly PhysicsConfig PhysicsConfig = new();
-    public readonly HealthConfig Health = new();
-    public readonly float KnockbackDuration = 3;
-    public readonly float KnockbackGravityScale = .15f;
-    public readonly GunConfig Gun = new();
-    public readonly LaserAmmunitionConfig LaserAmmunition = new();
-    public readonly LaserConfig Laser = new();
+    [Serializable]
+    public class PlayerConfig: IConfig
+    {
+        public PhysicsConfig PhysicsConfig = new();
+        public HealthConfig Health = new();
+        public float KnockbackDuration = 3;
+        public float KnockbackGravityScale = 0.15f;
+        public GunConfig Gun = new();
+        public LaserAmmunitionConfig LaserAmmunition = new();
+        public LaserConfig Laser = new();
+    }
 }

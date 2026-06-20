@@ -1,43 +1,46 @@
 using UnityEngine;
 
-public static class RotationTool
+namespace Tools.Runtime
 {
-    public static Vector3[] GetSplitDirections(
-        Vector3 baseDirection,
-        int count,
-        float spreadAngle)
+    public static class RotationTool
     {
-        Vector3[] directions = new Vector3[count];
-
-        if (count == 1)
+        public static Vector3[] GetSplitDirections(
+            Vector3 baseDirection,
+            int count,
+            float spreadAngle)
         {
-            directions[0] = baseDirection;
+            Vector3[] directions = new Vector3[count];
+
+            if (count == 1)
+            {
+                directions[0] = baseDirection;
+                return directions;
+            }
+
+            float startAngle = -spreadAngle * 0.5f;
+            float angleStep = spreadAngle / count;
+
+            for (int i = 0; i < count; i++)
+            {
+                float angle = startAngle + angleStep * i;
+
+                directions[i] = Rotate(baseDirection, angle);
+            }
+
             return directions;
         }
 
-        float startAngle = -spreadAngle * 0.5f;
-        float angleStep = spreadAngle / count;
-
-        for (int i = 0; i < count; i++)
+        private static Vector2 Rotate(Vector2 vector, float degrees)
         {
-            float angle = startAngle + angleStep * i;
+            float radians = degrees * Mathf.Deg2Rad;
 
-            directions[i] = Rotate(baseDirection, angle);
+            float sin = Mathf.Sin(radians);
+            float cos = Mathf.Cos(radians);
+
+            float x = vector.x * cos - vector.y * sin;
+            float y = vector.x * sin + vector.y * cos;
+
+            return new Vector2(x, y);
         }
-
-        return directions;
-    }
-
-    private static Vector2 Rotate(Vector2 vector, float degrees)
-    {
-        float radians = degrees * Mathf.Deg2Rad;
-
-        float sin = Mathf.Sin(radians);
-        float cos = Mathf.Cos(radians);
-
-        float x = vector.x * cos - vector.y * sin;
-        float y = vector.x * sin + vector.y * cos;
-
-        return new Vector2(x, y);
     }
 }

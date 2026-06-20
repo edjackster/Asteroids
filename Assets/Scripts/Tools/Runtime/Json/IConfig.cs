@@ -1,3 +1,6 @@
-﻿public interface IConfig
+﻿namespace Tools.Runtime.Json
 {
+    public interface IConfig
+    {
+    }
 }

@@ -1,3 +1,6 @@
-﻿public struct AdEndSignal
+﻿namespace Core.Signals
 {
+    public struct AdEndSignal
+    {
+    }
 }

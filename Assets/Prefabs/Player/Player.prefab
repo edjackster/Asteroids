@@ -253,8 +253,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e75d83bf76f09964483dfbaa4cd9d625, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cooldown: 1
-  _laserDuration: 0.2
   _lineRenderer: {fileID: 4991791879526091811}
   _collider2D: {fileID: 8528536984844217256}
 --- !u!61 &8528536984844217256
@@ -485,8 +483,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 478b988d34514c0d818ab6468e3c315d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _knockbackDuration: 3
-  _knockbackGravityScale: 0.15
   _gun: {fileID: 5138072999759520618}
   _laser: {fileID: 3687781806160003171}
 --- !u!114 &7524578038687813494
@@ -536,7 +532,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3736164325378764768}
   - component: {fileID: 5138072999759520618}
-  - component: {fileID: 6654879988563065315}
   m_Layer: 0
   m_Name: Shooting Point
   m_TagString: Untagged
@@ -572,20 +567,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _firePoint: {fileID: 3736164325378764768}
-  _cooldown: 0.2
-  _bulletSpawner: {fileID: 6654879988563065315}
---- !u!114 &6654879988563065315
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5300696559754390112}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 063d3574dc58eb54bbdbdc9f13126de8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7018140060664813718
 GameObject:
   m_ObjectHideFlags: 0

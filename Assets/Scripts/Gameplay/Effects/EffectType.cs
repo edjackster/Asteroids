@@ -1,5 +1,8 @@
-﻿public enum EffectType
+﻿namespace Gameplay.Effects
 {
-    Collision,
-    Destroy,
+    public enum EffectType
+    {
+        Collision,
+        Destroy,
+    }
 }

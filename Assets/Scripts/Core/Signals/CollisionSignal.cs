@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 
-public struct CollisionSignal
+namespace Core.Signals
 {
-    public Vector3 Position;
-
-    public CollisionSignal(Vector3 position)
+    public struct CollisionSignal
     {
-        Position = position;
+        public Vector3 Position;
+
+        public CollisionSignal(Vector3 position)
+        {
+            Position = position;
+        }
     }
 }

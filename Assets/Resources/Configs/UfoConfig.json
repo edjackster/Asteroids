@@ -9,7 +9,7 @@
     "MinSpeed": 0.0,
     "MinAngularSpeed": 0.0,
     "LayerMask": {
-      "value": 0
+      "value": 192
     },
     "Bounciness": 1.0,
     "Gravity": 1.0

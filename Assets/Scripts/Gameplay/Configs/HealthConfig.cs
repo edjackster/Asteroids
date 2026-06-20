@@ -1,7 +1,10 @@
 ﻿using System;
 
-[Serializable]
-public class HealthConfig
+namespace Gameplay.Configs
 {
-    public readonly int MaxHealth = 3;
+    [Serializable]
+    public class HealthConfig
+    {
+        public int MaxHealth = 3;
+    }
 }

@@ -1,37 +1,41 @@
 using Core.Input;
+using Core.Physics;
 using UnityEngine;
 using Zenject;
 
-[RequireComponent(typeof(PhysicsBody2D))]
-public class Movement : MonoBehaviour
+namespace Gameplay.Player
 {
-    private PhysicsBody2D _physicsBody;
-    private IInput _input;
-
-    [Inject]
-    public void Construct(IInput input)
+    [RequireComponent(typeof(PhysicsBody2D))]
+    public class Movement : MonoBehaviour
     {
-        _input = input;
-    }
+        private PhysicsBody2D _physicsBody;
+        private IInput _input;
 
-    private void Start()
-    {
-        _physicsBody = GetComponent<PhysicsBody2D>();
-    }
+        [Inject]
+        public void Construct(IInput input)
+        {
+            _input = input;
+        }
 
-    private void OnEnable()
-    {
-        _input.Moved += OnMove;
-    }
+        private void Start()
+        {
+            _physicsBody = GetComponent<PhysicsBody2D>();
+        }
 
-    private void OnDisable()
-    {
-        _input.Moved -= OnMove;
-    }
+        private void OnEnable()
+        {
+            _input.Moved += OnMove;
+        }
 
-    private void OnMove(Vector2 dir)
-    {
-        _physicsBody.SetDesiredVelocity(transform.up);
-        _physicsBody.SetDesiredDirection(dir);
+        private void OnDisable()
+        {
+            _input.Moved -= OnMove;
+        }
+
+        private void OnMove(Vector2 dir)
+        {
+            _physicsBody.SetDesiredVelocity(transform.up);
+            _physicsBody.SetDesiredDirection(dir);
+        }
     }
 }

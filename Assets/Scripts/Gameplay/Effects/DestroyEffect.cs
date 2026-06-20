@@ -1,3 +1,6 @@
-public class DestroyEffect : PoolableParticle
+namespace Gameplay.Effects
 {
+    public class DestroyEffect : PoolableParticle
+    {
+    }
 }

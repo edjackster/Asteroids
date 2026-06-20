@@ -1,42 +1,46 @@
 using System;
+using Core.Spawns;
 
-public class EffectsPoolFacade
+namespace Gameplay.Effects
 {
-    private readonly PrefabPool<CollisionEffect> _collisionEffectsPool;
-    private readonly PrefabPool<DestroyEffect> _destroyEffectsPool;
-
-    public EffectsPoolFacade(PrefabPool<CollisionEffect> collisionEffectsPool, PrefabPool<DestroyEffect> partPool)
+    public class EffectsPoolFacade
     {
-        _collisionEffectsPool = collisionEffectsPool;
-        _destroyEffectsPool = partPool;
-    }
+        private readonly PrefabPool<CollisionEffect> _collisionEffectsPool;
+        private readonly PrefabPool<DestroyEffect> _destroyEffectsPool;
 
-    public PoolableParticle Get(EffectType type)
-    {
-        switch (type)
+        public EffectsPoolFacade(PrefabPool<CollisionEffect> collisionEffectsPool, PrefabPool<DestroyEffect> destroyEffectsPool)
         {
-            case EffectType.Collision:
-                return _collisionEffectsPool.Get();
-            
-            case EffectType.Destroy:
-                return _destroyEffectsPool.Get();
-            
-            default:
-                throw new ArgumentException($"{type} is not a valid type");
+            _collisionEffectsPool = collisionEffectsPool;
+            _destroyEffectsPool = destroyEffectsPool;
         }
-    }
 
-    public void Release(PoolableParticle effect)
-    {
-        switch (effect)
+        public PoolableParticle Get(EffectType type)
         {
-            case CollisionEffect asteroid:
-                _collisionEffectsPool.Release(asteroid);
-                break;
+            switch (type)
+            {
+                case EffectType.Collision:
+                    return _collisionEffectsPool.Get();
             
-            case DestroyEffect asteroidPart:
-                _destroyEffectsPool.Release(asteroidPart);
-                break;
+                case EffectType.Destroy:
+                    return _destroyEffectsPool.Get();
+            
+                default:
+                    throw new ArgumentException($"{type} is not a valid type");
+            }
+        }
+
+        public void Release(PoolableParticle effect)
+        {
+            switch (effect)
+            {
+                case CollisionEffect asteroid:
+                    _collisionEffectsPool.Release(asteroid);
+                    break;
+            
+                case DestroyEffect asteroidPart:
+                    _destroyEffectsPool.Release(asteroidPart);
+                    break;
+            }
         }
     }
 }

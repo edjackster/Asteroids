@@ -1,9 +1,14 @@
-﻿public struct DespawnSignal<T> where T : IPoolable
-{
-    public T Item;
+﻿using UnityEngine;
 
-    public DespawnSignal(T item)
+namespace Core.Signals
+{
+    public struct DespawnSignal<T> where T : Component
     {
-        Item = item;
+        public T Item;
+
+        public DespawnSignal(T item)
+        {
+            Item = item;
+        }
     }
 }

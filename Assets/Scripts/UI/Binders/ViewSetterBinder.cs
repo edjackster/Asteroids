@@ -2,40 +2,43 @@
 using MVVM;
 using UniRx;
 
-public class ViewSetterBinder<T> : IBinder, IObserver<T>
+namespace UI.Binders
 {
-    private readonly Action<T> _viewSetter;
-    private readonly IReadOnlyReactiveProperty<T> _viewModelProperty;
-    private IDisposable _subscription;
-
-    public ViewSetterBinder(Action<T> viewSetter, IReadOnlyReactiveProperty<T> viewModelProperty)
+    public class ViewSetterBinder<T> : IBinder, IObserver<T>
     {
-        _viewSetter = viewSetter;
-        _viewModelProperty = viewModelProperty;
-    }
+        private readonly Action<T> _viewSetter;
+        private readonly IReadOnlyReactiveProperty<T> _viewModelProperty;
+        private IDisposable _subscription;
 
-    public void Bind()
-    {
-        OnNext(_viewModelProperty.Value);
-        _subscription = _viewModelProperty.Subscribe(this);
-    }
+        public ViewSetterBinder(Action<T> viewSetter, IReadOnlyReactiveProperty<T> viewModelProperty)
+        {
+            _viewSetter = viewSetter;
+            _viewModelProperty = viewModelProperty;
+        }
 
-    public void Unbind()
-    {
-        _subscription?.Dispose();
-        _subscription = null;
-    }
+        public void Bind()
+        {
+            OnNext(_viewModelProperty.Value);
+            _subscription = _viewModelProperty.Subscribe(this);
+        }
 
-    public void OnNext(T value)
-    {
-        _viewSetter(value);
-    }
+        public void Unbind()
+        {
+            _subscription?.Dispose();
+            _subscription = null;
+        }
 
-    public void OnCompleted()
-    {
-    }
+        public void OnNext(T value)
+        {
+            _viewSetter(value);
+        }
 
-    public void OnError(Exception error)
-    {
+        public void OnCompleted()
+        {
+        }
+
+        public void OnError(Exception error)
+        {
+        }
     }
 }

@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Gameplay.Enemies;
+using Tools.Runtime.Json;
 
-[Serializable]
-public class ScoreConfig: IConfig
+namespace Gameplay.Configs
 {
-    public readonly Dictionary<EnemyType, int> Rewards = new(3);
+    [Serializable]
+    public class ScoreConfig: IConfig
+    {
+        public Dictionary<EnemyType, int> Rewards = new(3);
+    }
 }

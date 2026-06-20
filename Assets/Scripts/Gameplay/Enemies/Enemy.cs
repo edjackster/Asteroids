@@ -1,51 +1,53 @@
-﻿using Gameplay.Enemies;
+﻿using Core.Physics;
+using Core.Signals;
+using Gameplay.Enemies;
+using Gameplay.Player.Shooting;
 using UnityEngine;
 using Zenject;
 
-[RequireComponent(typeof(PhysicsBody2D))]
-public abstract class Enemy : MonoBehaviour, IPoolable
+namespace Gameplay.Enemies
 {
-    public abstract EnemyType Type { get; }
-    
-    protected SignalBus SignalBus;
-    protected PhysicsBody2D PhysicsBody;
-
-    [Inject]
-    public virtual void Construct(SignalBus signalBus)
+    [RequireComponent(typeof(PhysicsBody2D))]
+    public abstract class Enemy : MonoBehaviour
     {
-        SignalBus = signalBus;
-    }
+        public abstract EnemyType Type { get; }
 
-    private void Awake()
-    {
-        PhysicsBody = GetComponent<PhysicsBody2D>();
-    }
+        protected SignalBus SignalBus;
+        protected PhysicsBody2D PhysicsBody;
 
-    private void OnEnable()
-    {
-        PhysicsBody.Collide += HandleCollision;
-    }
+        [Inject]
+        public virtual void Construct(SignalBus signalBus)
+        {
+            SignalBus = signalBus;
+        }
 
-    private void OnDisable()
-    {
-        PhysicsBody.Collide -= HandleCollision;
-    }
+        protected virtual void Awake()
+        {
+            PhysicsBody = GetComponent<PhysicsBody2D>();
+        }
 
-    public void Hit()
-    {
-        SignalBus.Fire(new DespawnSignal<Enemy>(this));
-    }
+        protected virtual void OnEnable()
+        {
+            PhysicsBody.Collide += HandleCollision;
+        }
 
-    private void HandleCollision(Collider2D collision)
-    {
-        if (collision.TryGetComponent(out Bullet bullet) == false)
-            return;
+        private void OnDisable()
+        {
+            PhysicsBody.Collide -= HandleCollision;
+        }
 
-        Hit();
-        bullet.Hit();
-    }
+        public void Hit()
+        {
+            SignalBus.Fire(new DespawnSignal<Enemy>(this));
+        }
 
-    public virtual void OnSpawned()
-    {
+        private void HandleCollision(Collider2D collision)
+        {
+            if (collision.TryGetComponent(out Bullet bullet) == false)
+                return;
+
+            Hit();
+            bullet.Hit();
+        }
     }
 }

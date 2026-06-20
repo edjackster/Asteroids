@@ -1,8 +1,12 @@
 ﻿using System;
+using Tools.Runtime.Json;
 
-[Serializable]
-public class BulletConfig: IConfig
+namespace Gameplay.Configs
 {
-    public readonly float Speed = 7f;
-    public readonly float LifeTime = 4f;
+    [Serializable]
+    public class BulletConfig: IConfig
+    {
+        public float Speed = 7f;
+        public float LifeTime = 4f;
+    }
 }

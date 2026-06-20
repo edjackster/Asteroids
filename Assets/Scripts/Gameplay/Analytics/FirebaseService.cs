@@ -1,35 +1,41 @@
 ﻿using System;
-using Core.StateMachine;
+using Core.Firebase;
+using Core.Signals;
+using Gameplay.GameState.States;
+using Gameplay.Player;
 using Zenject;
 
-public class FirebaseService : IInitializable, IDisposable
+namespace Gameplay.Analytics
 {
-    private readonly SignalBus _signalBus;
-    private readonly FirebaseProvider _firebaseProvider;
-    private readonly ScoreCounter _scoreCounter;
-
-    public FirebaseService(SignalBus signalBus, FirebaseProvider firebaseProvider, ScoreCounter scoreCounter)
+    public class FirebaseService : IInitializable, IDisposable
     {
-        _signalBus = signalBus;
-        _firebaseProvider = firebaseProvider;
-        _scoreCounter = scoreCounter;
-    }
+        private readonly SignalBus _signalBus;
+        private readonly FirebaseProvider _firebaseProvider;
+        private readonly ScoreCounter _scoreCounter;
 
-    public void Initialize()
-    {
-        _signalBus.Subscribe<EnterStateSignal<GameState>>(ShowGameOverAd);
-    }
+        public FirebaseService(SignalBus signalBus, FirebaseProvider firebaseProvider, ScoreCounter scoreCounter)
+        {
+            _signalBus = signalBus;
+            _firebaseProvider = firebaseProvider;
+            _scoreCounter = scoreCounter;
+        }
 
-    public void Dispose()
-    {
-        _signalBus.Unsubscribe<EnterStateSignal<GameState>>(ShowGameOverAd);
-    }
+        public void Initialize()
+        {
+            _signalBus.Subscribe<EnterStateSignal<GameState.States.GameState>>(LogGameOver);
+        }
 
-    private void ShowGameOverAd(EnterStateSignal<GameState> signal)
-    {
-        if (signal.State is not GameOverState)
-            return;
+        public void Dispose()
+        {
+            _signalBus.Unsubscribe<EnterStateSignal<GameState.States.GameState>>(LogGameOver);
+        }
+
+        private void LogGameOver(EnterStateSignal<GameState.States.GameState> signal)
+        {
+            if (signal.State is not GameOverState)
+                return;
         
-        _firebaseProvider.LogDeathEvent(_scoreCounter.Score);
+            _firebaseProvider.LogDeathEvent(_scoreCounter.Score);
+        }
     }
 }

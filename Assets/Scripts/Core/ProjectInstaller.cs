@@ -1,14 +1,37 @@
+using Core.Advertisement;
+using Core.Configs;
+using Core.Firebase;
+using Core.Signals;
+using Tools.Runtime.Json;
 using Zenject;
 
-public class ProjectInstaller : MonoInstaller
+namespace Core
 {
-    public override void InstallBindings()
+    public class ProjectInstaller : MonoInstaller
     {
-        SignalBusInstaller.Install(Container);
+        public override void InstallBindings()
+        {
+            SignalBusInstaller.Install(Container);
         
-        Container.Bind<FirebaseProvider>().AsSingle().NonLazy();
-        Container.Bind<AdMobProvider>().AsSingle().NonLazy();
+            BindProviders();
+            DeclareSignals();
         
-        Container.DeclareSignal<AdEndSignal>();
+            Container
+                .Bind<AdMobConfig>()
+                .FromInstance(JsonConverter.Load<AdMobConfig>())
+                .AsSingle();
+        }
+
+        private void DeclareSignals()
+        {
+            Container.DeclareSignal<AdEndSignal>();
+            Container.DeclareSignal<AdFailedSignal>();
+        }
+
+        private void BindProviders()
+        {
+            Container.Bind<FirebaseProvider>().AsSingle().NonLazy();
+            Container.Bind<AdMobProvider>().AsSingle().NonLazy();
+        }
     }
 }

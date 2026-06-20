@@ -1,10 +1,14 @@
 ﻿using System;
+using Tools.Runtime.Json;
 
-[Serializable]
-public class EnemySpawnerConfig: IConfig
+namespace Gameplay.Configs
 {
-    public readonly float SpawnOffset = 0.5f;
-    public readonly float SpawnDelay = 1.5f;
-    public readonly int MaxEnemyCount = 10;
-    public readonly float UfoSpawnChance = 0.2f;
+    [Serializable]
+    public class EnemySpawnerConfig: IConfig
+    {
+        public float SpawnOffset = 0.5f;
+        public float SpawnDelay = 1.5f;
+        public int RateSpawnEnemyLimit = 10;
+        public float UfoSpawnChance = 0.2f;
+    }
 }

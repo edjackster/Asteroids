@@ -1,56 +1,57 @@
 ﻿using Core.Input;
+using Gameplay.Configs;
 using UnityEngine;
 using Zenject;
 
-public class Gun : MonoBehaviour
+namespace Gameplay.Player.Shooting
 {
-    [SerializeField] private Transform _firePoint;
-    [SerializeField] private BulletSpawner _bulletSpawner;
-
-    private IInput _input;
-    private bool _isShooting;
-    private float _nextFireTime;
-    private GunConfig  _config;
-
-    [Inject]
-    public void Construct(IInput input, GunConfig config)
+    public class Gun : MonoBehaviour
     {
-        _input = input;
-        _config = config;
-    }
+        [SerializeField] private Transform _firePoint;
+    
+        private BulletSpawner _bulletSpawner;
+        private IInput _input;
+        private bool _isShooting;
+        private float _nextFireTime;
+        private GunConfig  _config;
 
-    private void Update()
-    {
-        if (_isShooting && Time.time >= _nextFireTime)
+        [Inject]
+        public void Construct(IInput input, GunConfig config, BulletSpawner bulletSpawner)
         {
-            Shoot();
-
-            _nextFireTime = Time.time + _config.GunCooldown;
+            _input = input;
+            _config = config;
+            _bulletSpawner = bulletSpawner;
         }
-    }
 
-    private void OnEnable()
-    {
-        _input.MainFire += SetShootingState;
-    }
+        private void Update()
+        {
+            if (_isShooting && Time.time >= _nextFireTime)
+            {
+                Shoot();
 
-    private void OnDisable()
-    {
-        _input.MainFire -= SetShootingState;
-    }
+                _nextFireTime = Time.time + _config.GunCooldown;
+            }
+        }
 
-    public void StopShooting()
-    {
-        _isShooting = false;
-    }
+        private void OnEnable()
+        {
+            _input.MainFire += SetShootingState;
+        }
 
-    private void SetShootingState(bool isShooting)
-    {
-        _isShooting = isShooting;
-    }
+        private void OnDisable()
+        {
+            _isShooting = false;
+            _input.MainFire -= SetShootingState;
+        }
 
-    private void Shoot()
-    {
-        _bulletSpawner.SpawnBullet(_firePoint.position, _firePoint.rotation);
+        private void SetShootingState(bool isShooting)
+        {
+            _isShooting = isShooting;
+        }
+
+        private void Shoot()
+        {
+            _bulletSpawner.SpawnBullet(_firePoint.position, _firePoint.rotation);
+        }
     }
 }

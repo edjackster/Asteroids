@@ -3,27 +3,30 @@ using MVVM;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HealthView : MonoBehaviour
+namespace UI.View
 {
-    [SerializeField] private Image _heartImage;
-
-    private readonly List<Image> _hearts = new();
-
-    [Method("MaxHealth")]
-    public void SetMaxHealth(int value)
+    public class HealthView : MonoBehaviour
     {
-        for (int i = 0; i < value; i++)
+        [SerializeField] private Image _heartImage;
+
+        private readonly List<Image> _hearts = new();
+
+        [Method("MaxHealth")]
+        public void SetMaxHealth(int value)
         {
-            _hearts.Add(Instantiate(_heartImage, transform));
+            for (int i = 0; i < value; i++)
+            {
+                _hearts.Add(Instantiate(_heartImage, transform));
+            }
         }
-    }
 
-    [Method("Health")]
-    public void OnHealthChanged(int value)
-    {
-        for (int i = 0; i < _hearts.Count; i++)
+        [Method("Health")]
+        public void OnHealthChanged(int value)
         {
-            _hearts[i].enabled = i < value;
+            for (int i = 0; i < _hearts.Count; i++)
+            {
+                _hearts[i].enabled = i < value;
+            }
         }
     }
 }

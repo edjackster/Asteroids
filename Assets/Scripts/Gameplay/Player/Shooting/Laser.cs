@@ -1,79 +1,90 @@
 using Core.Input;
+using Gameplay.Configs;
+using Gameplay.Enemies;
+using Tools.Runtime;
 using UnityEngine;
 using Zenject;
 
-public class Laser : MonoBehaviour
+namespace Gameplay.Player.Shooting
 {
-    [SerializeField] private LineRenderer _lineRenderer;
-    [SerializeField] private Collider2D _collider2D;
-
-    private IInput _input;
-    private bool _canShoot = true;
-    private float _nextFireTime;
-    private Timer _timer;
-    private LaserAmmunition _ammunition;
-    private LaserConfig _config;
-
-    [Inject]
-    public void Construct(IInput input, Timer timer, LaserAmmunition ammunition, LaserConfig config)
+    public class Laser : MonoBehaviour
     {
-        _ammunition = ammunition;
-        _input = input;
-        _timer = timer;
-        _config = config;
-    }
+        [SerializeField] private LineRenderer _lineRenderer;
+        [SerializeField] private Collider2D _collider2D;
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        
-        if(other.TryGetComponent(out Enemy enemy) == false)
-            return;
-        
-        enemy.Hit();
-    }
+        private IInput _input;
+        private bool _canShoot = true;
+        private Timer _timer = new();
+        private LaserAmmunition _ammunition;
+        private LaserConfig _config;
 
-    private void OnEnable()
-    {
-        _input.SecondaryFire += TryStartLaser;
-    }
+        [Inject]
+        public void Construct(IInput input, LaserAmmunition ammunition, LaserConfig config)
+        {
+            _ammunition = ammunition;
+            _input = input;
+            _config = config;
+        }
 
-    private void OnDisable()
-    {
-        _input.SecondaryFire -= TryStartLaser;
-    }
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if(other.TryGetComponent(out Enemy enemy) == false)
+                return;
+        
+            enemy.Hit();
+        }
 
-    private void TryStartLaser()
-    {
-        if (_canShoot == false)
-            return;
-        
-        if (_ammunition.CurrentAmount <= 0)
-            return;
-        
-        _ammunition.SpendAmmo();
-        
-        _lineRenderer.enabled = true;
-        _collider2D.enabled = true;
-        _canShoot = false;
-        
-        _timer.Completed += StopLaser;
-        _timer.Start(_config.Duration);
-    }
+        private void OnEnable()
+        {
+            _input.SecondaryFire += TryStartLaser;
+        }
 
-    private void StopLaser()
-    {
-        _timer.Completed -= StopLaser;
-        
-        _collider2D.enabled = false;
-        _lineRenderer.enabled = false;
-        
-        _timer.Completed += RecoverLaser;
-        _timer.Start(_config.Cooldown);
-    }
+        private void OnDisable()
+        {
+            _input.SecondaryFire -= TryStartLaser;
+            _timer.Completed -= StopLaser;
+            _timer.Completed -= RecoverLaser;
+            _timer.Cancel();
+            SetComponentsActive(false);
+            _canShoot = true;
+        }
 
-    private void RecoverLaser()
-    {
-        _timer.Completed -= RecoverLaser;
-        _canShoot = true;
+        private void TryStartLaser()
+        {
+            if (_canShoot == false)
+                return;
+        
+            if (_ammunition.CurrentAmount <= 0)
+                return;
+        
+            _ammunition.SpendAmmo();
+            SetComponentsActive(true);
+            _canShoot = false;
+        
+            _timer.Completed += StopLaser;
+            _timer.Start(_config.Duration);
+        }
+
+        private void StopLaser()
+        {
+            _timer.Completed -= StopLaser;
+
+            SetComponentsActive(false);
+        
+            _timer.Completed += RecoverLaser;
+            _timer.Start(_config.Cooldown);
+        }
+
+        private void RecoverLaser()
+        {
+            _timer.Completed -= RecoverLaser;
+            _canShoot = true;
+        }
+
+        private void SetComponentsActive(bool active)
+        {
+            _collider2D.enabled = active;
+            _lineRenderer.enabled = active;
+        }
     }
 }

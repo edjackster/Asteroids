@@ -1,6 +1,6 @@
 {
   "SpawnOffset": 0.5,
   "SpawnDelay": 1.5,
-  "MaxEnemyCount": 10,
+  "RateSpawnEnemyLimit": 10,
   "UfoSpawnChance": 0.2
 }

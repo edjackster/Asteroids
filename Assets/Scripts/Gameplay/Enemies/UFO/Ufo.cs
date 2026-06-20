@@ -1,32 +1,38 @@
-using Gameplay.Enemies;
+using Core.Physics;
+using Gameplay.Configs;
 using UnityEngine;
 using Zenject;
 
-[RequireComponent(typeof(PhysicsBody2D))]
-public class Ufo : Enemy
+namespace Gameplay.Enemies.UFO
 {
-    private UfoConfig _config;
-    private Transform _target;
-    
-    public override EnemyType Type => EnemyType.Ufo;
-
-    [Inject]
-    public void Construct(Player player,  UfoConfig config)
+    [RequireComponent(typeof(PhysicsBody2D))]
+    public class Ufo : Enemy
     {
-        _target = player.transform;
-        _config = config;
-    }
+        private UfoConfig _config;
+        private Transform _target;
 
-    private void Update()
-    {
-        var direction = (_target.position - transform.position).normalized;
-        direction *= _config.Speed;
-        
-        PhysicsBody.SetDesiredDirection(direction);
-        PhysicsBody.SetDesiredVelocity(direction);
-    }
+        public override EnemyType Type => EnemyType.Ufo;
 
-    public override void OnSpawned()
-    {
+        [Inject]
+        public void Construct(Player.Player player, UfoConfig config)
+        {
+            _target = player.transform;
+            _config = config;
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            PhysicsBody.Initialize(_config.PhysicsConfig);
+        }
+
+        private void Update()
+        {
+            var direction = (_target.position - transform.position).normalized;
+            direction *= _config.Speed;
+
+            PhysicsBody.SetDesiredDirection(direction);
+            PhysicsBody.SetDesiredVelocity(direction);
+        }
     }
 }

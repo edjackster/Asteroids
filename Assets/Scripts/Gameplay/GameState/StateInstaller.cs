@@ -1,36 +1,48 @@
+using Core.Signals;
 using Core.StateMachine;
-using Gameplay.GameState;
+using Gameplay.GameState.States;
 using Zenject;
 
-public class StateInstaller : MonoInstaller
+namespace Gameplay.GameState
 {
-    public override void InstallBindings()
+    public class StateInstaller : MonoInstaller
     {
-        DeclareStateSignals();
-        BindStates();
-        
-        Container
-            .BindInterfacesAndSelfTo<GameStateChanger>()
-            .AsSingle();
-    }
+        public override void InstallBindings()
+        {
+            DeclareStateSignals();
+            BindStates();
+            BindStateMachine();
+        }
 
-    private void BindStates()
-    {
-        BindState<PlayingState>();
-        BindState<ShowAdState>();
-        BindState<GameOverState>();
-    }
+        private void BindStateMachine()
+        {
+            Container
+                .BindInterfacesAndSelfTo<GameStateChanger>()
+                .AsSingle();
 
-    private void BindState<T>()
-    {
-        Container
-            .Bind<T>()
-            .AsSingle();
-    }
+            Container
+                .Bind<StateMachine<States.GameState>>()
+                .AsSingle();
+        }
 
-    private void DeclareStateSignals()
-    {
-        Container.DeclareSignal<EnterStateSignal<GameState>>();
-        Container.DeclareSignal<ExitStateSignal<GameState>>();
+        private void BindStates()
+        {
+            BindState<PlayingState>();
+            BindState<ShowAdState>();
+            BindState<GameOverState>();
+        }
+
+        private void BindState<T>()
+        {
+            Container
+                .Bind<T>()
+                .AsSingle();
+        }
+
+        private void DeclareStateSignals()
+        {
+            Container.DeclareSignal<EnterStateSignal<States.GameState>>();
+            Container.DeclareSignal<ExitStateSignal<States.GameState>>();
+        }
     }
 }

@@ -1,8 +1,13 @@
 ﻿using System;
+using Core.Physics;
+using Tools.Runtime.Json;
 
-[Serializable]
-public class UfoConfig: IConfig
+namespace Gameplay.Configs
 {
-    public readonly PhysicsConfig PhysicsConfig = new();
-    public readonly float Speed = .5f;
+    [Serializable]
+    public class UfoConfig: IConfig
+    {
+        public PhysicsConfig PhysicsConfig = new();
+        public float Speed = 0.5f;
+    }
 }

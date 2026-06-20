@@ -1,69 +1,64 @@
 using System;
+using Tools.Runtime;
 using UnityEngine;
+using Zenject;
 
-public class ScreenWrapper : MonoBehaviour
+namespace Gameplay.GameZone
 {
-    private const float OffsetDelta = .99f;
+    public class ScreenWrapper : MonoBehaviour
+    {
+        private const float OffsetDelta = .99f;
     
-    [SerializeField] private float _wrapOffset = 0.5f;
-
-    private float _minX, _maxX, _minY, _maxY;
+        [SerializeField] private float _wrapOffset = 0.5f;
     
-    public event Action Wrapped;
+        private ScreenEdgeTool _screenEdgeTool;
+    
+        public event Action Wrapped;
 
-    private void Start()
-    {
-        Camera cam = Camera.main;
-
-        if (cam is null)
-            return;
-
-        Vector3 bottomLeft = cam.ViewportToWorldPoint(new Vector3(0, 0, 0));
-        Vector3 topRight = cam.ViewportToWorldPoint(new Vector3(1, 1, 0));
-
-        _minX = bottomLeft.x;
-        _minY = bottomLeft.y;
-        _maxX = topRight.x;
-        _maxY = topRight.y;
-    }
-
-    private void FixedUpdate()
-    {
-        WrapPosition();
-    }
-
-    private void WrapPosition()
-    {
-        Vector2 pos = transform.position;
-        bool wrapped = false;
-        float newOffset = _wrapOffset * OffsetDelta;
-
-        if (pos.x < _minX - _wrapOffset)
+        [Inject]
+        public void Construct(ScreenEdgeTool tool)
         {
-            pos.x = _maxX + newOffset;
-            wrapped = true;
-        }
-        else if (pos.x > _maxX + _wrapOffset)
-        {
-            pos.x = _minX - newOffset;
-            wrapped = true;
+            _screenEdgeTool = tool;
         }
 
-        if (pos.y < _minY - _wrapOffset)
+        private void FixedUpdate()
         {
-            pos.y = _maxY + newOffset;
-            wrapped = true;
-        }
-        else if (pos.y > _maxY + _wrapOffset)
-        {
-            pos.y = _minY - newOffset;
-            wrapped = true;
+            WrapPosition();
         }
 
-        if(wrapped)
+        private void WrapPosition()
         {
-            transform.position = pos;
-            Wrapped?.Invoke();
+            Vector2 pos = transform.position;
+            bool wrapped = false;
+            float newOffset = _wrapOffset * OffsetDelta;
+
+            if (pos.x < _screenEdgeTool.MinX - _wrapOffset)
+            {
+                pos.x = _screenEdgeTool.MaxX + newOffset;
+                wrapped = true;
+            }
+            else if (pos.x > _screenEdgeTool.MaxX + _wrapOffset)
+            {
+                pos.x = _screenEdgeTool.MinX - newOffset;
+                wrapped = true;
+            }
+
+            if (pos.y < _screenEdgeTool.MinY - _wrapOffset)
+            {
+                pos.y = _screenEdgeTool.MaxY + newOffset;
+                wrapped = true;
+            }
+            else if (pos.y > _screenEdgeTool.MaxY + _wrapOffset)
+            {
+                pos.y = _screenEdgeTool.MinY - newOffset;
+                wrapped = true;
+            }
+
+            if(wrapped)
+            {
+                transform.position = pos;
+                Wrapped?.Invoke();
+            }
         }
     }
 }

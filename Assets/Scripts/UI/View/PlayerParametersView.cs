@@ -2,17 +2,20 @@ using MVVM;
 using TMPro;
 using UnityEngine;
 
-public class PlayerParametersView : MonoBehaviour
+namespace UI.View
 {
-    [Data("ParameterPositionX")]
-    public TMP_Text PositionX;
+    public class PlayerParametersView : MonoBehaviour
+    {
+        [Data("ParameterPositionX")]
+        public TMP_Text PositionX;
     
-    [Data("ParameterPositionY")]
-    public TMP_Text PositionY;
+        [Data("ParameterPositionY")]
+        public TMP_Text PositionY;
     
-    [Data("ParameterVelocity")]
-    public TMP_Text Velocity;
+        [Data("ParameterVelocity")]
+        public TMP_Text Velocity;
     
-    [Data("ParameterRotation")]
-    public TMP_Text Rotation;
+        [Data("ParameterRotation")]
+        public TMP_Text Rotation;
+    }
 }

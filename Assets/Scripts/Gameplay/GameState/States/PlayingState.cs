@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using Zenject;
 
-
-namespace Core.StateMachine
+namespace Gameplay.GameState.States
 {
     public class PlayingState : GameState
     {

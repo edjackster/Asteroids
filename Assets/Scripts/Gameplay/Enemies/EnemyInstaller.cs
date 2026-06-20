@@ -1,45 +1,54 @@
+using Core.Signals;
+using Core.Spawns;
+using Gameplay.Enemies.Asteroid;
+using Gameplay.Enemies.Spawn;
+using Gameplay.Enemies.UFO;
 using UnityEngine;
 using Zenject;
 
-public class EnemyInstaller : MonoInstaller
+namespace Gameplay.Enemies
 {
-    [SerializeField] private Asteroid _asteroidPrefab;
-    [SerializeField] private AsteroidPart _asteroidPartPrefab;
-    [SerializeField] private Ufo _ufoPrefab;
-    
-    [SerializeField] private Transform _enemyParent;
-    [SerializeField] private Transform _spawnPosition;
-
-    public override void InstallBindings()
+    public class EnemyInstaller : MonoInstaller
     {
-        BindEnemyPools();
-        DeclareDespawnSignals();
-    }
+        [SerializeField] private Asteroid.Asteroid _asteroidPrefab;
+        [SerializeField] private AsteroidPart _asteroidPartPrefab;
+        [SerializeField] private Ufo _ufoPrefab;
 
-    private void DeclareDespawnSignals()
-    {
-        Container.DeclareSignal<DespawnSignal<Enemy>>();
-    }
+        [SerializeField] private Transform _enemyParent;
+        [SerializeField] private Transform _spawnPosition;
 
-    private void BindEnemyPools()
-    {
-        BindPool<Asteroid>(_asteroidPrefab, _enemyParent);
-        BindPool<AsteroidPart>(_asteroidPartPrefab, _enemyParent);
-        BindPool<Ufo>(_ufoPrefab, _enemyParent);
-        
-        Container.Bind<EnemyPoolFacade>().AsSingle();
-    }
+        public override void InstallBindings()
+        {
+            BindEnemyPools();
+            DeclareDespawnSignals();
+            BindServices();
+        }
 
-    private void BindPool<T>(Component prefab, Transform parent = null) where T : Component, IPoolable
-    {
-        Container
-            .Bind<PrefabFactory<T>>()
-            .AsSingle()
-            .WithArguments(prefab);
+        private void BindServices()
+        {
+            Container
+                .BindInterfacesAndSelfTo<EnemySpawnerService>()
+                .AsSingle()
+                .NonLazy();
 
-        Container
-            .Bind<PrefabPool<T>>()
-            .AsSingle()
-            .WithArguments(_spawnPosition.position, parent);
+            Container
+                .Bind<AsteroidDestructionService>()
+                .AsSingle()
+                .NonLazy();
+        }
+
+        private void DeclareDespawnSignals()
+        {
+            Container.DeclareSignal<DespawnSignal<Enemy>>();
+        }
+
+        private void BindEnemyPools()
+        {
+            BindPoolTool.Bind<Asteroid.Asteroid>(Container, _asteroidPrefab, _spawnPosition, _enemyParent);
+            BindPoolTool.Bind<AsteroidPart>(Container,_asteroidPartPrefab, _spawnPosition, _enemyParent);
+            BindPoolTool.Bind<Ufo>(Container,_ufoPrefab, _spawnPosition, _enemyParent);
+
+            Container.Bind<EnemyPoolFacade>().AsSingle();
+        }
     }
 }

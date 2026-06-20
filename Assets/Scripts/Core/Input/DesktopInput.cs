@@ -9,7 +9,7 @@ namespace Core.Input
         private const string HorizontalAxisName = "Horizontal";
         private const string VerticalAxisName = "Vertical";
         
-        private Vector2 direction = Vector2.zero;
+        private Vector2 _direction = Vector2.zero;
         
         public event Action<Vector2> Moved;
         public event Action<bool> MainFire;
@@ -17,11 +17,11 @@ namespace Core.Input
 
         public void Tick()
         {
-            direction.x = UnityEngine.Input.GetAxis(HorizontalAxisName);
-            direction.y = UnityEngine.Input.GetAxis(VerticalAxisName);
+            _direction.x = UnityEngine.Input.GetAxis(HorizontalAxisName);
+            _direction.y = UnityEngine.Input.GetAxis(VerticalAxisName);
             
-            if (direction != Vector2.zero)
-                direction.Normalize();
+            if (_direction != Vector2.zero)
+                _direction.Normalize();
             
             if (UnityEngine.Input.GetMouseButtonDown(0))
                 MainFire?.Invoke(true);
@@ -32,7 +32,7 @@ namespace Core.Input
             if (UnityEngine.Input.GetMouseButtonDown(1))
                 SecondaryFire?.Invoke();
             
-            Moved?.Invoke(direction);
+            Moved?.Invoke(_direction);
         }
     }
 }

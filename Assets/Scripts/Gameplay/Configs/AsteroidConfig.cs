@@ -1,13 +1,18 @@
 ﻿using System;
+using Core.Physics;
+using Tools.Runtime.Json;
 
-[Serializable]
-public class AsteroidConfig: IConfig
+namespace Gameplay.Configs
 {
-    public readonly PhysicsConfig PhysicsConfig = new();
-    public readonly float MinSpeed = .5f;
-    public readonly float MaxSpeed = 1f;
-    public readonly float MinRotationSpeed = 30f;
-    public readonly float MaxRotationSpeed = 60f;
-    public readonly int MinPartsCount = 1;
-    public readonly int MaxPartsCount = 3;
+    [Serializable]
+    public class AsteroidConfig : IConfig
+    {
+        public PhysicsConfig PhysicsConfig = new();
+        public float MinSpeed = 0.5f;
+        public float MaxSpeed = 1f;
+        public float MinRotationSpeed = 30f;
+        public float MaxRotationSpeed = 60f;
+        public int MinPartsCount = 1;
+        public int MaxPartsCount = 3;
+    }
 }

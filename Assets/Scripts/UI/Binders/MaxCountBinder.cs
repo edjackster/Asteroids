@@ -1,23 +1,26 @@
 ﻿using System;
 using MVVM;
 
-public class MaxCountBinder : IBinder
+namespace UI.Binders
 {
-    private readonly Action<int> _viewSetMaxCount;
-    private readonly int _viewModelMaxCount;
-
-    public MaxCountBinder(Action<int> viewSetMaxCount, int viewModelMaxCount)
+    public class MaxCountBinder : IBinder
     {
-        _viewSetMaxCount = viewSetMaxCount;
-        _viewModelMaxCount = viewModelMaxCount;
-    }
+        private readonly Action<int> _viewSetMaxCount;
+        private readonly int _viewModelMaxCount;
 
-    public void Bind()
-    {
-        _viewSetMaxCount?.Invoke(_viewModelMaxCount);
-    }
+        public MaxCountBinder(Action<int> viewSetMaxCount, int viewModelMaxCount)
+        {
+            _viewSetMaxCount = viewSetMaxCount;
+            _viewModelMaxCount = viewModelMaxCount;
+        }
 
-    public void Unbind()
-    {
+        public void Bind()
+        {
+            _viewSetMaxCount?.Invoke(_viewModelMaxCount);
+        }
+
+        public void Unbind()
+        {
+        }
     }
 }

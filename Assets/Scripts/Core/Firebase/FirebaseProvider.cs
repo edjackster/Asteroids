@@ -5,40 +5,47 @@ using Firebase.Analytics;
 using Firebase.Extensions;
 using UnityEngine;
 
-public class FirebaseProvider
+namespace Core.Firebase
 {
-    public FirebaseProvider()
+    public class FirebaseProvider
     {
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(OnDependencyRecieved);
-    }
+        private const string GameOverEventName = "Game Over";
+        private const string StartEventName = "Start";
+        private const string ScoreParameterName = "S    core";
 
-    private void OnDependencyRecieved(Task<DependencyStatus> task)
-    {
-        try
+        public FirebaseProvider()
         {
-            if (task.IsCompletedSuccessfully == false)
-                throw new Exception("Could not resolve Firebase dependencies", task.Exception);
-            
-            var dependencyStatus = task.Result;
-            
-            if (dependencyStatus != DependencyStatus.Available)
-                throw new Exception($"Could not resolve Firebase dependencies: {dependencyStatus}");
-            
-            LogLaunchEvent();
+            FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(OnDependencyReceived);
         }
-        catch (Exception e)
+
+        private void OnDependencyReceived(Task<DependencyStatus> task)
         {
-            Debug.LogException(e);
+            try
+            {
+                if (task.IsCompletedSuccessfully == false)
+                    throw new Exception("Could not resolve Firebase dependencies", task.Exception);
+            
+                var dependencyStatus = task.Result;
+            
+                if (dependencyStatus != DependencyStatus.Available)
+                    throw new Exception($"Could not resolve Firebase dependencies: {dependencyStatus}");
+            
+                LogLaunchEvent();
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
         }
-    }
 
-    private void LogLaunchEvent()
-    {
-        FirebaseAnalytics.LogEvent("Start");
-    }
+        private void LogLaunchEvent()
+        {
+            FirebaseAnalytics.LogEvent(StartEventName);
+        }
 
-    public void LogDeathEvent(int finalScore = 0)
-    {
-        FirebaseAnalytics.LogEvent("Death", new Parameter("score", finalScore));
+        public void LogDeathEvent(int finalScore = 0)
+        {
+            FirebaseAnalytics.LogEvent(GameOverEventName, new Parameter(ScoreParameterName, finalScore));
+        }
     }
 }

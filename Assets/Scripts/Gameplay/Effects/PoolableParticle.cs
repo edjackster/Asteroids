@@ -1,30 +1,34 @@
+using Core.Signals;
 using UnityEngine;
 using Zenject;
 
-[RequireComponent(typeof(ParticleSystem))]
-public class PoolableParticle : MonoBehaviour, IPoolable
+namespace Gameplay.Effects
 {
-    private SignalBus _signalBus;
-    private ParticleSystem _particleSystem;
-
-    [Inject]
-    public void Construct(SignalBus signalBus)
+    [RequireComponent(typeof(ParticleSystem))]
+    public class PoolableParticle : MonoBehaviour
     {
-        _signalBus = signalBus;
-    }
+        private SignalBus _signalBus;
+        private ParticleSystem _particleSystem;
 
-    private void Awake()
-    {
-        _particleSystem = GetComponent<ParticleSystem>();
-    }
+        [Inject]
+        public void Construct(SignalBus signalBus)
+        {
+            _signalBus = signalBus;
+        }
 
-    public void OnParticleOver()
-    {
-        _signalBus.Fire(new DespawnSignal<PoolableParticle>(this));
-    }
+        private void Awake()
+        {
+            _particleSystem = GetComponent<ParticleSystem>();
+        }
 
-    public void OnSpawned()
-    {
-        _particleSystem.Play();
+        public void OnParticleSystemStopped()
+        {
+            _signalBus.Fire(new DespawnSignal<PoolableParticle>(this));
+        }
+
+        private void OnEnable()
+        {
+            _particleSystem.Play();
+        }
     }
 }

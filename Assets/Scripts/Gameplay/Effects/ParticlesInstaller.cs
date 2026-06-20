@@ -1,38 +1,43 @@
+using Core.Signals;
+using Core.Spawns;
 using UnityEngine;
 using Zenject;
 
-public class ParticlesInstaller : MonoInstaller
+namespace Gameplay.Effects
 {
-    [SerializeField] private CollisionEffect _collisionEffectPrefab;
-    [SerializeField] private DestroyEffect _destroyEffectPrefab;
-    [SerializeField] private Transform _effectsParent;
-    [SerializeField] private Transform _spawnPosition;
-
-    public override void InstallBindings()
+    public class ParticlesInstaller : MonoInstaller
     {
-        BindEffectsPools();
+        [SerializeField] private CollisionEffect _collisionEffectPrefab;
+        [SerializeField] private DestroyEffect _destroyEffectPrefab;
+        [SerializeField] private Transform _effectsParent;
+        [SerializeField] private Transform _spawnPosition;
+
+        public override void InstallBindings()
+        {
+            BindEffectsPools();
+            DeclareSignals();
+            BindServices();
+        }
+
+        private void BindServices()
+        {
+            Container
+                .BindInterfacesAndSelfTo<EffectsSpawnerService>()
+                .AsSingle()
+                .NonLazy();
+        }
+
+        private void DeclareSignals()
+        {
+            Container.DeclareSignal<DespawnSignal<PoolableParticle>>();
+        }
+
+        private void BindEffectsPools()
+        {
+            BindPoolTool.Bind<CollisionEffect>(Container,_collisionEffectPrefab, _spawnPosition, _effectsParent);
+            BindPoolTool.Bind<DestroyEffect>(Container,_destroyEffectPrefab, _spawnPosition, _effectsParent);
         
-        Container.DeclareSignal<DespawnSignal<PoolableParticle>>();
-    }
-
-    private void BindEffectsPools()
-    {
-        BindPool<CollisionEffect>(_collisionEffectPrefab, _effectsParent);
-        BindPool<DestroyEffect>(_destroyEffectPrefab, _effectsParent);
-        
-        Container.Bind<EffectsPoolFacade>().AsSingle();
-    }
-
-    private void BindPool<T>(Component prefab, Transform parent = null) where T : Component, IPoolable
-    {
-        Container
-            .Bind<PrefabFactory<T>>()
-            .AsSingle()
-            .WithArguments(prefab);
-
-        Container
-            .Bind<PrefabPool<T>>()
-            .AsSingle()
-            .WithArguments(_spawnPosition.position, parent);
+            Container.Bind<EffectsPoolFacade>().AsSingle();
+        }
     }
 }

@@ -1,3 +1,6 @@
-﻿public struct PlayerDiedSignal
+﻿namespace Gameplay.Signals
 {
+    public struct PlayerDiedSignal
+    {
+    }
 }

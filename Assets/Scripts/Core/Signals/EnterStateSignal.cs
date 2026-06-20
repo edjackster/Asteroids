@@ -1,11 +1,14 @@
 ﻿using Core.StateMachine;
 
-public struct EnterStateSignal<T> where T : IState
+namespace Core.Signals
 {
-    public T State;
-
-    public EnterStateSignal(T state)
+    public struct EnterStateSignal<T> where T : IState
     {
-        State = state;
+        public T State;
+
+        public EnterStateSignal(T state)
+        {
+            State = state;
+        }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using System;
 
-[Serializable]
-public class GunConfig
+namespace Gameplay.Configs
 {
-    public readonly float GunCooldown = .2f;
+    [Serializable]
+    public class GunConfig
+    {
+        public float GunCooldown = 0.2f;
+    }
 }

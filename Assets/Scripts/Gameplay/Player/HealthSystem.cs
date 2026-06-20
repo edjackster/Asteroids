@@ -1,44 +1,63 @@
 using System;
+using Gameplay.Configs;
+using Gameplay.Signals;
 using Zenject;
 
-public class HealthSystem
+namespace Gameplay.Player
 {
-    private HealthConfig _config;
+    public class HealthSystem: IInitializable, IDisposable
+    {
+        private const int MinHealth = 0;
+        private const int DamageAmount = 1;
     
-    private int _currentHealth;
-    private SignalBus _signalBus;
+        private HealthConfig _config;
+    
+        private int _currentHealth;
+        private SignalBus _signalBus;
 
-    public int MaxHealth => _config.MaxHealth;
+        public int MaxHealth => _config.MaxHealth;
+        public bool IsDead => _currentHealth <= 0;
 
-    public int CurrentHealth
-    {
-        get => _currentHealth;
-
-        private set
+        public int CurrentHealth
         {
-            _currentHealth = value;
+            get => _currentHealth;
+
+            private set
+            {
+                _currentHealth = value;
             
-            if(CurrentHealth  == 0)
-                _signalBus.Fire<PlayerDiedSignal>();
+                if(CurrentHealth  == 0)
+                    _signalBus.Fire<PlayerDiedSignal>();
             
-            HealthChanged?.Invoke(value);
+                HealthChanged?.Invoke(value);
+            }
         }
-    }
 
-    public event Action<int> HealthChanged;
+        public event Action<int> HealthChanged;
 
-    public HealthSystem(SignalBus signalBus,HealthConfig config)
-    {
-        CurrentHealth = config.MaxHealth;
-        _config = config;
-        _signalBus = signalBus;
-    }
+        public HealthSystem(SignalBus signalBus,HealthConfig config)
+        {
+            CurrentHealth = config.MaxHealth;
+            _config = config;
+            _signalBus = signalBus;
+        }
 
-    public void TakeDamage(int amount = 1)
-    {
-        if (amount < 0)
-            throw new Exception("Damage amount cannot be negative");
+        public void Initialize()
+        {
+            _signalBus.Subscribe<PlayerHitSignal>(TakeDamage);
+        }
 
-        CurrentHealth = Math.Clamp(CurrentHealth - amount, 0, _config.MaxHealth);
+        public void Dispose()
+        {
+            _signalBus.Unsubscribe<PlayerHitSignal>(TakeDamage);
+        }
+
+        public void TakeDamage()
+        {
+            if(IsDead)
+                return;
+
+            CurrentHealth = Math.Clamp(CurrentHealth - DamageAmount, MinHealth, _config.MaxHealth);
+        }
     }
 }

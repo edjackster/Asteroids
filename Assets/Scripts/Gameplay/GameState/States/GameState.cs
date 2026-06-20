@@ -1,6 +1,8 @@
-﻿using Zenject;
+﻿using Core.Signals;
+using Core.StateMachine;
+using Zenject;
 
-namespace Core.StateMachine
+namespace Gameplay.GameState.States
 {
     public abstract class GameState: IState
     {

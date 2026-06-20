@@ -1,62 +1,90 @@
+using Core.Signals;
+using Core.Spawns;
+using Gameplay.Player.PlayerState;
+using Gameplay.Player.Shooting;
+using Gameplay.Signals;
 using UnityEngine;
 using Zenject;
 
-public class PlayerInstaller : MonoInstaller
+namespace Gameplay.Player
 {
-    [SerializeField] private Bullet _bulletPrefab;
-    
-    [SerializeField] private Transform _bulletParent;
-    [SerializeField] private Transform _spawnPosition;
-    
-    [SerializeField] private Player _player;
-
-    public override void InstallBindings()
+    public class PlayerInstaller : MonoInstaller
     {
-        BindBulletPool();
-        BindPlayer();
-        DeclareSignals();
-    }
+        [SerializeField] private Bullet _bulletPrefab;
 
-    private void BindPlayer()
-    {
-        Container
-            .Bind<HealthSystem>()
-            .AsSingle();
+        [SerializeField] private Transform _bulletParent;
+        [SerializeField] private Transform _spawnPosition;
 
-        Container
-            .BindInterfacesAndSelfTo<LaserAmmunition>()
-            .AsSingle();
+        [SerializeField] private Player _player;
 
-        Container
-            .BindInterfacesAndSelfTo<ScoreCounter>()
-            .AsSingle();
-        
-        Container
-            .BindInstance(_player)
-            .AsSingle();
-    }
+        public override void InstallBindings()
+        {
+            BindBulletPool();
+            BindServices();
+            BindPlayer();
+            DeclareSignals();
+            BindPlayerStates();
+        }
 
-    private void DeclareSignals()
-    {
-        Container.DeclareSignal<PlayerDiedSignal>();
-        Container.DeclareSignal<DespawnSignal<Bullet>>();
-    }
+        private void BindPlayerStates()
+        {
+            Container
+                .BindInterfacesAndSelfTo<DeadState>()
+                .AsTransient();
+            Container
+                .BindInterfacesAndSelfTo<ConsciousState>()
+                .AsTransient();
+            Container
+                .Bind<UnconsciousState>()
+                .AsTransient();
 
-    private void BindBulletPool()
-    {
-        BindPool<Bullet>(_bulletPrefab, _bulletParent);
-    }
+            Container
+                .BindInterfacesAndSelfTo<PlayerStateChanger>()
+                .AsSingle()
+                .NonLazy();
+        }
 
-    private void BindPool<T>(Component prefab, Transform parent = null) where T : Component, IPoolable
-    {
-        Container
-            .Bind<PrefabFactory<T>>()
-            .AsSingle()
-            .WithArguments(prefab);
+        private void BindServices()
+        {
+            Container
+                .BindInterfacesAndSelfTo<BulletSpawner>()
+                .AsSingle()
+                .NonLazy();
+        }
 
-        Container
-            .Bind<PrefabPool<T>>()
-            .AsSingle()
-            .WithArguments(_spawnPosition.position, parent);
+        private void BindPlayer()
+        {
+            Container
+                .BindInterfacesAndSelfTo<HealthSystem>()
+                .AsSingle();
+
+            Container
+                .BindInterfacesAndSelfTo<LaserAmmunition>()
+                .AsSingle();
+
+            Container
+                .BindInterfacesAndSelfTo<ScoreCounter>()
+                .AsSingle();
+
+            Container
+                .BindInstance(_player)
+                .AsSingle();
+
+            Container
+                .BindInterfacesAndSelfTo<PlayerCollisionHandler>()
+                .AsSingle();
+        }
+
+        private void DeclareSignals()
+        {
+            Container.DeclareSignal<PlayerDiedSignal>();
+            Container.DeclareSignal<PlayerHitSignal>();
+            Container.DeclareSignal<DespawnSignal<Bullet>>();
+        }
+
+        private void BindBulletPool()
+        {
+            BindPoolTool.Bind<Bullet>(Container, _bulletPrefab, _spawnPosition, _bulletParent);
+        }
     }
 }

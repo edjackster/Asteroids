@@ -3,40 +3,43 @@ using MVVM;
 using TMPro;
 using UniRx;
 
-public class TextBinder : IBinder, IObserver<string>
+namespace UI.Binders
 {
-    private readonly TMP_Text _viewTextMesh;
-    private readonly IReadOnlyReactiveProperty<string> _viewModelStringProperty;
-    private IDisposable _subscription;
-
-    public TextBinder(TMP_Text viewTextMesh, IReadOnlyReactiveProperty<string> viewModelStringProperty)
+    public class TextBinder : IBinder, IObserver<string>
     {
-        _viewTextMesh = viewTextMesh;
-        _viewModelStringProperty = viewModelStringProperty;
-    }
+        private readonly TMP_Text _viewTextMesh;
+        private readonly IReadOnlyReactiveProperty<string> _viewModelStringProperty;
+        private IDisposable _subscription;
 
-    public void Bind()
-    {
-        OnNext(_viewModelStringProperty.Value);
-        _subscription = _viewModelStringProperty.Subscribe(this);
-    }
+        public TextBinder(TMP_Text viewTextMesh, IReadOnlyReactiveProperty<string> viewModelStringProperty)
+        {
+            _viewTextMesh = viewTextMesh;
+            _viewModelStringProperty = viewModelStringProperty;
+        }
 
-    public void Unbind()
-    {
-        _subscription?.Dispose();
-        _subscription = null;
-    }
+        public void Bind()
+        {
+            OnNext(_viewModelStringProperty.Value);
+            _subscription = _viewModelStringProperty.Subscribe(this);
+        }
 
-    public void OnNext(string value)
-    {
-        _viewTextMesh.text = value;
-    }
+        public void Unbind()
+        {
+            _subscription?.Dispose();
+            _subscription = null;
+        }
 
-    public void OnCompleted()
-    {
-    }
+        public void OnNext(string value)
+        {
+            _viewTextMesh.text = value;
+        }
 
-    public void OnError(Exception error)
-    {
+        public void OnCompleted()
+        {
+        }
+
+        public void OnError(Exception error)
+        {
+        }
     }
 }

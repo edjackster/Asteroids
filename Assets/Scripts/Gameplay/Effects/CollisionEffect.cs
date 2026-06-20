@@ -1,3 +1,6 @@
-public class CollisionEffect : PoolableParticle
+namespace Gameplay.Effects
 {
+    public class CollisionEffect : PoolableParticle
+    {
+    }
 }

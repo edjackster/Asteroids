@@ -3,62 +3,75 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public class Timer
+namespace Tools.Runtime
 {
-    private CancellationTokenSource _cancellationTokenSource;
-
-    public event Action Completed;
-    // public event Action Canceled;
-    public event Action<float> CountDown;
-
-    public bool IsRunning { get; private set; }
-    public float RemainingTime { get; private set; }
-
-    public void Start(float duration)
+    public class Timer
     {
-        Cancel();
+        private CancellationTokenSource _cancellationTokenSource;
 
-        _cancellationTokenSource = new CancellationTokenSource();
-        Run(duration, _cancellationTokenSource.Token).Forget();
-    }
+        public event Action Completed;
+        public event Action Canceled;
+        public event Action<float> CountDown;
 
-    public void Cancel()
-    {
-        if (_cancellationTokenSource == null) return;
-        
-        IsRunning = false;
-        _cancellationTokenSource.Cancel();
-        _cancellationTokenSource.Dispose();
-        _cancellationTokenSource = null;
-    }
+        public bool IsRunning { get; private set; }
+        public float RemainingTime { get; private set; }
 
-    private async UniTaskVoid Run(float duration, CancellationToken token)
-    {
-        IsRunning = true;
-        RemainingTime = duration;
-
-        try
+        public void Start(float duration)
         {
-            while (RemainingTime > 0f)
-            {
-                await UniTask.Yield(PlayerLoopTiming.Update, token);
+            Cancel();
 
-                RemainingTime -= Time.deltaTime;
+            _cancellationTokenSource = new CancellationTokenSource();
+            Run(duration, _cancellationTokenSource.Token).Forget(OnError);
+        }
 
-                if (RemainingTime < 0f)
-                    RemainingTime = 0f;
-
-                CountDown?.Invoke(RemainingTime);
-            }
-            
+        public void Cancel()
+        {
             IsRunning = false;
+            _cancellationTokenSource?.Cancel();
+            ClearTimerState();
+        }
+
+        private async UniTask Run(float duration, CancellationToken token)
+        {
+            IsRunning = true;
+            RemainingTime = duration;
+
+            try
+            {
+                while (RemainingTime > 0f)
+                {
+                    await UniTask.Yield(PlayerLoopTiming.Update, token);
+
+                    RemainingTime -= Time.deltaTime;
+
+                    if (RemainingTime < 0f)
+                        RemainingTime = 0f;
+
+                    CountDown?.Invoke(RemainingTime);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Canceled?.Invoke();
+            }
+            finally
+            {
+                ClearTimerState();
+            }
+        
             Completed?.Invoke();
         }
-        catch (OperationCanceledException)
+
+        private void ClearTimerState()
         {
-            IsRunning = false;
-            // Canceled?.Invoke();
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
         }
-        
+
+        private void OnError(Exception error)
+        {
+            Debug.LogError(error);
+            Canceled?.Invoke();
+        }
     }
 }

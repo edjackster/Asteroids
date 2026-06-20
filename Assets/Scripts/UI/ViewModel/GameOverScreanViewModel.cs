@@ -1,46 +1,50 @@
 using System;
-using Core.StateMachine;
+using Core.Signals;
+using Gameplay.GameState.States;
 using MVVM;
 using UniRx;
 using Zenject;
 
-public class GameOverViewModel: IDisposable, IInitializable
+namespace UI.ViewModel
 {
-    private SignalBus _signalBus;
+    public class GameOverViewModel: IDisposable, IInitializable
+    {
+        private SignalBus _signalBus;
     
-    [Data("GameOverScreen")] 
-    public readonly ReactiveProperty<bool> IsGameOverScreenOpen = new();
+        [Data("GameOverScreen")] 
+        public readonly ReactiveProperty<bool> IsGameOverScreenOpen = new();
 
-    public GameOverViewModel(SignalBus signalBus)
-    {
-        _signalBus = signalBus;
-    }
+        public GameOverViewModel(SignalBus signalBus)
+        {
+            _signalBus = signalBus;
+        }
 
-    public void Initialize()
-    {
-        _signalBus.Subscribe<EnterStateSignal<GameState>>(ShowWindow);
-        _signalBus.Subscribe<ExitStateSignal<GameState>>(CloseWindow);
-    }
+        public void Initialize()
+        {
+            _signalBus.Subscribe<EnterStateSignal<GameState>>(ShowWindow);
+            _signalBus.Subscribe<ExitStateSignal<GameState>>(CloseWindow);
+        }
 
-    public void Dispose()
-    {
-        _signalBus.Unsubscribe<EnterStateSignal<GameState>>(ShowWindow);
-        _signalBus.Unsubscribe<ExitStateSignal<GameState>>(CloseWindow);
-    }
+        public void Dispose()
+        {
+            _signalBus.Unsubscribe<EnterStateSignal<GameState>>(ShowWindow);
+            _signalBus.Unsubscribe<ExitStateSignal<GameState>>(CloseWindow);
+        }
 
-    private void ShowWindow(EnterStateSignal<GameState> signal)
-    {
-        if(signal.State is not GameOverState)
-            return;
+        private void ShowWindow(EnterStateSignal<GameState> signal)
+        {
+            if(signal.State is not GameOverState)
+                return;
         
-        IsGameOverScreenOpen.Value = true;
-    }
+            IsGameOverScreenOpen.Value = true;
+        }
 
-    private void CloseWindow(ExitStateSignal<GameState> signal)
-    {
-        if(signal.State is not GameOverState)
-            return;
+        private void CloseWindow(ExitStateSignal<GameState> signal)
+        {
+            if(signal.State is not GameOverState)
+                return;
         
-        IsGameOverScreenOpen.Value = false;
+            IsGameOverScreenOpen.Value = false;
+        }
     }
 }

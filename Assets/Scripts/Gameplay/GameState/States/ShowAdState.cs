@@ -1,6 +1,7 @@
-﻿using Zenject;
+﻿using Core.Advertisement;
+using Zenject;
 
-namespace Core.StateMachine
+namespace Gameplay.GameState.States
 {
     public class ShowAdState : GameState
     {

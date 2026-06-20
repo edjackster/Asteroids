@@ -1,120 +1,42 @@
-﻿using Core.StateMachine;
+﻿using Core.Physics;
+using Gameplay.Configs;
+using Gameplay.Player.Shooting;
 using UnityEngine;
 using Zenject;
 
-[RequireComponent(typeof(PhysicsBody2D))]
-[RequireComponent(typeof(Movement))]
-[RequireComponent(typeof(PlayerAnimator))]
-public class Player : MonoBehaviour
+namespace Gameplay.Player
 {
-    [SerializeField] private Gun _gun;
-    [SerializeField] private Laser _laser;
-
-    private PhysicsBody2D _physicsBody2D;
-    private Movement _movement;
-    private PlayerAnimator _playerAnimator;
-    private Timer _timer;
-    private HealthSystem _healthSystem;
-    private SignalBus _signalBus;
-    private float _currentGravity;
-    private PlayerConfig _config;
-
-    public PhysicsBody2D Physics => _physicsBody2D;
-
-    [Inject]
-    public void Construct(Timer timer, HealthSystem healthSystem, SignalBus signalBus, PlayerConfig config)
+    [RequireComponent(typeof(PhysicsBody2D))]
+    [RequireComponent(typeof(Movement))]
+    [RequireComponent(typeof(PlayerAnimator))]
+    public class Player : MonoBehaviour
     {
-        _timer = timer;
-        _healthSystem = healthSystem;
-        _signalBus = signalBus;
-        _config = config;
-    }
+        [SerializeField] private Gun _gun;
+        [SerializeField] private Laser _laser;
 
-    private void Awake()
-    {
-        _physicsBody2D = GetComponent<PhysicsBody2D>();
-        _movement = GetComponent<Movement>();
-        _playerAnimator = GetComponent<PlayerAnimator>();
-    }
+        private PhysicsBody2D _physicsBodyBody;
+        private Movement _movement;
+        private PlayerAnimator _playerAnimator;
+        private PlayerConfig _config;
 
-    private void OnEnable()
-    {
-        _physicsBody2D.Collide += HandleCollision;
-        _signalBus.Subscribe<EnterStateSignal<GameState>>(OnStateChange);
-    }
-
-    private void OnDisable()
-    {
-        _physicsBody2D.Collide -= HandleCollision;
-        _signalBus.Unsubscribe<EnterStateSignal<GameState>>(OnStateChange);
-    }
-
-    private void OnStateChange(EnterStateSignal<GameState> signal)
-    {
-        switch (signal.State)
+        public PhysicsBody2D PhysicsBody => _physicsBodyBody;
+        public Movement Movement => _movement;
+        public PlayerAnimator PlayerAnimator => _playerAnimator;
+        public Gun Gun => _gun;
+        public Laser Laser => _laser;
+        
+        [Inject]
+        public void Construct(PlayerConfig config)
         {
-            case GameOverState _:
-                DisableInput();
-                
-                break;
-
-            case PlayingState _:
-                EnableInput();
-                break;
+            _config = config;
         }
-    }
 
-    private void HandleCollision(Collider2D otherCollider)
-    {
-        if (otherCollider.TryGetComponent(out Enemy _) == false)
-            return;
-
-        var hitPoint = otherCollider.ClosestPoint(transform.position);
-        _signalBus.Fire(new CollisionSignal(hitPoint));
-
-        Hit();
-    }
-
-    private void Hit()
-    {
-        DisableInput();
-
-        _currentGravity = _physicsBody2D.GravityScale;
-
-        _physicsBody2D.SetIsColliding(false);
-        _physicsBody2D.SetGravity(_config.KnockbackGravityScale);
-        _healthSystem.TakeDamage();
-        _playerAnimator.PlayInvincibleState();
-
-        _timer.Completed += OnTimerOut;
-
-        _timer.Start(_config.KnockbackDuration);
-    }
-
-    private void OnTimerOut()
-    {
-        _timer.Completed -= OnTimerOut;
-
-        _playerAnimator.PlayDefaultState();
-
-        _physicsBody2D.SetGravity(_currentGravity);
-        _physicsBody2D.SetIsColliding(true);
-
-        EnableInput();
-    }
-
-    private void DisableInput()
-    {
-        _gun.StopShooting();
-        _gun.enabled = false;
-        _laser.enabled = false;
-        _movement.enabled = false;
-    }
-
-    private void EnableInput()
-    {
-        _gun.enabled = true;
-        _laser.enabled = true;
-        _movement.enabled = true;
+        private void Awake()
+        {
+            _physicsBodyBody = GetComponent<PhysicsBody2D>();
+            _movement = GetComponent<Movement>();
+            _playerAnimator = GetComponent<PlayerAnimator>();
+            _physicsBodyBody.Initialize(_config.PhysicsConfig);
+        }
     }
 }

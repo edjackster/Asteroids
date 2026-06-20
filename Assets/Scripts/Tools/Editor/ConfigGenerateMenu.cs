@@ -1,41 +1,45 @@
 ﻿using System;
 using System.Linq;
+using Tools.Runtime.Json;
 using UnityEditor;
 
-public static class ConfigGeneratorMenu
+namespace Tools.Editor
 {
-    [MenuItem("Tools/Configs/Generate All")]
-    private static void GenerateAll()
+    public static class ConfigGeneratorMenu
     {
-        Type[] configTypes = AppDomain.CurrentDomain
-            .GetAssemblies()
-            .SelectMany(x => x.GetTypes())
-            .Where(IsConfig)
-            .ToArray();
-
-        foreach (Type type in configTypes)
+        [MenuItem("Tools/Configs/Generate All")]
+        private static void GenerateAll()
         {
-            Generate(type);
+            Type[] configTypes = AppDomain.CurrentDomain
+                .GetAssemblies()
+                .SelectMany(x => x.GetTypes())
+                .Where(IsConfig)
+                .ToArray();
+
+            foreach (Type type in configTypes)
+            {
+                Generate(type);
+            }
+
+            AssetDatabase.Refresh();
         }
 
-        AssetDatabase.Refresh();
-    }
+        private static bool IsConfig(Type type)
+        {
+            return typeof(IConfig).IsAssignableFrom(type)
+                   && type.IsClass
+                   && !type.IsAbstract;
+        }
 
-    private static bool IsConfig(Type type)
-    {
-        return typeof(IConfig).IsAssignableFrom(type)
-               && type.IsClass
-               && !type.IsAbstract;
-    }
+        private static void Generate(Type type)
+        {
+            var method = typeof(JsonConverter)
+                .GetMethod(nameof(JsonConverter.Generate));
 
-    private static void Generate(Type type)
-    {
-        var method = typeof(JsonConverter)
-            .GetMethod(nameof(JsonConverter.Generate));
+            var genericMethod =
+                method.MakeGenericMethod(type);
 
-        var genericMethod =
-            method.MakeGenericMethod(type);
-
-        genericMethod.Invoke(null, null);
+            genericMethod.Invoke(null, null);
+        }
     }
 }

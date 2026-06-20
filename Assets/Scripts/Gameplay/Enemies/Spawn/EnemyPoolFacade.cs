@@ -1,52 +1,57 @@
 using System;
-using Gameplay.Enemies;
+using Core.Spawns;
+using Gameplay.Enemies.Asteroid;
+using Gameplay.Enemies.UFO;
 
-public class EnemyPoolFacade
+namespace Gameplay.Enemies.Spawn
 {
-    private readonly PrefabPool<Asteroid> _asteroidPool;
-    private readonly PrefabPool<AsteroidPart> _asteroidPartPool;
-    private readonly PrefabPool<Ufo> _ufoPool;
-
-    public EnemyPoolFacade(PrefabPool<Asteroid> asteroidPool, PrefabPool<AsteroidPart> partPool, PrefabPool<Ufo> ufoPool)
+    public class EnemyPoolFacade
     {
-        _asteroidPool = asteroidPool;
-        _asteroidPartPool = partPool;
-        _ufoPool = ufoPool;
-    }
+        private readonly PrefabPool<Asteroid.Asteroid> _asteroidPool;
+        private readonly PrefabPool<AsteroidPart> _asteroidPartPool;
+        private readonly PrefabPool<Ufo> _ufoPool;
 
-    public Enemy Get(EnemyType type)
-    {
-        switch (type)
+        public EnemyPoolFacade(PrefabPool<Asteroid.Asteroid> asteroidPool, PrefabPool<AsteroidPart> partPool, PrefabPool<Ufo> ufoPool)
         {
-            case EnemyType.Asteroid:
-                return _asteroidPool.Get();
-            
-            case EnemyType.AsteroidPart:
-                return _asteroidPartPool.Get();
-            
-            case EnemyType.Ufo:
-                return _ufoPool.Get();
-            
-            default:
-                throw new ArgumentException($"{type} is not a valid type");
+            _asteroidPool = asteroidPool;
+            _asteroidPartPool = partPool;
+            _ufoPool = ufoPool;
         }
-    }
 
-    public void Release(Enemy enemy)
-    {
-        switch (enemy)
+        public Enemy Get(EnemyType type)
         {
-            case Asteroid asteroid:
-                _asteroidPool.Release(asteroid);
-                break;
+            switch (type)
+            {
+                case EnemyType.Asteroid:
+                    return _asteroidPool.Get();
             
-            case AsteroidPart asteroidPart:
-                _asteroidPartPool.Release(asteroidPart);
-                break;
+                case EnemyType.AsteroidPart:
+                    return _asteroidPartPool.Get();
             
-            case Ufo ufo:
-                _ufoPool.Release(ufo);
-                break;
+                case EnemyType.Ufo:
+                    return _ufoPool.Get();
+            
+                default:
+                    throw new ArgumentException($"{type} is not a valid type");
+            }
+        }
+
+        public void Release(Enemy enemy)
+        {
+            switch (enemy)
+            {
+                case Asteroid.Asteroid asteroid:
+                    _asteroidPool.Release(asteroid);
+                    break;
+            
+                case AsteroidPart asteroidPart:
+                    _asteroidPartPool.Release(asteroidPart);
+                    break;
+            
+                case Ufo ufo:
+                    _ufoPool.Release(ufo);
+                    break;
+            }
         }
     }
 }

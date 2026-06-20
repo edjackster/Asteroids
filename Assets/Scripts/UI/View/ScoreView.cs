@@ -2,8 +2,11 @@ using MVVM;
 using TMPro;
 using UnityEngine;
 
-public class ScoreView : MonoBehaviour
+namespace UI.View
 {
-    [Data("Score")]
-    public TMP_Text Score;
+    public class ScoreView : MonoBehaviour
+    {
+        [Data("Score")]
+        public TMP_Text Score;
+    }
 }

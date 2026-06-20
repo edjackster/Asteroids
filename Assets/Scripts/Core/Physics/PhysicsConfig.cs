@@ -1,21 +1,24 @@
 ﻿using System;
 using UnityEngine;
 
-[Serializable]
-public class PhysicsConfig
+namespace Core.Physics
 {
-    public readonly float MaxSpeed;
-    public readonly float Acceleration;
-    public readonly float Deceleration;
+    [Serializable]
+    public class PhysicsConfig
+    {
+        public float MaxSpeed;
+        public float Acceleration;
+        public float Deceleration;
 
-    public readonly float MaxAngularSpeed;
-    public readonly float AngularAcceleration;
-    public readonly float AngularDeceleration;
+        public float MaxAngularSpeed;
+        public float AngularAcceleration;
+        public float AngularDeceleration;
 
-    public readonly float MinSpeed;
-    public readonly float MinAngularSpeed;
+        public float MinSpeed;
+        public float MinAngularSpeed;
 
-    public readonly LayerMask LayerMask;
-    public readonly float Bounciness;
-    public readonly float Gravity = 1;
+        public LayerMask LayerMask;
+        public float Bounciness;
+        public float Gravity = 1;
+    }
 }

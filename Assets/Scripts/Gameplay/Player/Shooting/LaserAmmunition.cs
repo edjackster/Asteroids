@@ -1,79 +1,83 @@
 using System;
+using Gameplay.Configs;
+using Tools.Runtime;
 using Zenject;
 
-public class LaserAmmunition : IInitializable, IDisposable
+namespace Gameplay.Player.Shooting
 {
-    private const int AmmoRecoveryCount = 1;
-    
-    private readonly Timer _timer;
-    private int _currentAmount;
-    private LaserAmmunitionConfig _config;
-
-    public int MaxAmmo => _config.MaxChargesAmount;
-    public float ReloadTime => _config.ReloadTime;
-
-    public int CurrentAmount
+    public class LaserAmmunition : IInitializable, IDisposable
     {
-        get => _currentAmount;
+        private const int AmmoRecoveryCount = 1;
 
-        private set
+        private readonly Timer _timer = new();
+        private int _currentAmount;
+        private LaserAmmunitionConfig _config;
+
+        public int MaxAmmo => _config.MaxChargesAmount;
+        public float ReloadTime => _config.ReloadTime;
+
+        public int CurrentAmount
         {
-            _currentAmount = value;
-            AmountChanged?.Invoke(value);
+            get => _currentAmount;
+
+            private set
+            {
+                _currentAmount = value;
+                AmountChanged?.Invoke(value);
+            }
         }
-    }
 
-    public event Action<int> AmountChanged;
-    public event Action<float> ReloadTimeLeft;
+        public event Action<int> AmountChanged;
+        public event Action<float> ReloadTimeLeft;
 
-    public LaserAmmunition(Timer timer, LaserAmmunitionConfig config)
-    {
-        _currentAmount = config.MaxChargesAmount;
-        _config = config;
-        _timer = timer;
-    }
-
-    public void SpendAmmo(int amount = 1)
-    {
-        if (amount < 0)
-            throw new Exception("Amount cannot be negative");
-
-        if (_currentAmount - amount < 0)
-            throw new Exception("Spent amount cannot be less than zero");
-
-        CurrentAmount -= amount;
-
-        if (_timer.IsRunning == false)
+        public LaserAmmunition(LaserAmmunitionConfig config)
         {
-            _timer.Start(_config.ReloadTime);
+            _currentAmount = config.MaxChargesAmount;
+            _config = config;
         }
-    }
 
-    public void Initialize()
-    {
-        _timer.Completed += AddAmmo;
-        _timer.CountDown += OnTimerTick;
-    }
+        public void SpendAmmo(int amount = 1)
+        {
+            if (amount < 0)
+                throw new Exception("Amount cannot be negative");
 
-    public void Dispose()
-    {
-        _timer.Completed -= AddAmmo;
-        _timer.CountDown -= OnTimerTick;
-    }
+            if (_currentAmount - amount < 0)
+                throw new Exception("Spent amount cannot be less than zero");
 
-    private void OnTimerTick(float dt)
-    {
-        ReloadTimeLeft?.Invoke(dt);
-    }
+            CurrentAmount -= amount;
 
-    private void AddAmmo()
-    {
-        if (CurrentAmount >= _config.MaxChargesAmount)
-            return;
+            if (_timer.IsRunning == false)
+            {
+                _timer.Start(_config.ReloadTime);
+            }
+        }
 
-        CurrentAmount += AmmoRecoveryCount;
+        public void Initialize()
+        {
+            _timer.Completed += AddAmmo;
+            _timer.CountDown += OnTimerTick;
+        }
 
-        if (CurrentAmount < _config.MaxChargesAmount)
-            _timer.Start(_config.ReloadTime);
+        public void Dispose()
+        {
+            _timer.Completed -= AddAmmo;
+            _timer.CountDown -= OnTimerTick;
+        }
+
+        private void OnTimerTick(float dt)
+        {
+            ReloadTimeLeft?.Invoke(dt);
+        }
+
+        private void AddAmmo()
+        {
+            if (CurrentAmount >= _config.MaxChargesAmount)
+                return;
+
+            CurrentAmount += AmmoRecoveryCount;
+
+            if (CurrentAmount < _config.MaxChargesAmount)
+                _timer.Start(_config.ReloadTime);
+        }
     }
 }

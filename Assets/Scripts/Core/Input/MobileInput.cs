@@ -6,9 +6,9 @@ namespace Core.Input
 {
     public class MobileInput : IInput, ITickable, IDisposable, IInitializable
     {
-        private JoystickHandler _joystickHandler;
-        private MobileButton _fireButton;
-        private MobileButton _laserButton;
+        private readonly JoystickHandler _joystickHandler;
+        private readonly MobileButton _fireButton;
+        private readonly MobileButton _laserButton;
 
         public event Action<Vector2> Moved;
         public event Action<bool> MainFire;
