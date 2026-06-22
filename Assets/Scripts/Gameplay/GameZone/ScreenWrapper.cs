@@ -7,7 +7,7 @@ namespace Gameplay.GameZone
 {
     public class ScreenWrapper : MonoBehaviour
     {
-        private const float OffsetDelta = .99f;
+        private const float OffsetDelta = 0.99f;
     
         [SerializeField] private float _wrapOffset = 0.5f;
     

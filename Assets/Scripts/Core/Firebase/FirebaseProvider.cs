@@ -11,7 +11,7 @@ namespace Core.Firebase
     {
         private const string GameOverEventName = "Game Over";
         private const string StartEventName = "Start";
-        private const string ScoreParameterName = "S    core";
+        private const string ScoreParameterName = "Score";
 
         public FirebaseProvider()
         {

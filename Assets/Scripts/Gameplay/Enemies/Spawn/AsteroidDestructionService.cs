@@ -9,7 +9,7 @@ namespace Gameplay.Enemies.Spawn
 {
     public class AsteroidDestructionService : IInitializable, IDisposable
     {
-        private const float SpawnOffset = .5f;
+        private const float SpawnOffset = 0.5f;
         private const float SpreadAngle = 360f;
         private SignalBus _signalBus;
         private EnemySpawnerService _spawnerService;
@@ -27,7 +27,7 @@ namespace Gameplay.Enemies.Spawn
 
         public void Dispose()
         {
-            _signalBus.Subscribe<DespawnSignal<Enemy>>(OnAsteroidDestroy);
+            _signalBus.Unsubscribe<DespawnSignal<Enemy>>(OnAsteroidDestroy);
         }
 
         private void OnAsteroidDestroy(DespawnSignal<Enemy> signal)

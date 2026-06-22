@@ -32,7 +32,7 @@ namespace Gameplay.Enemies
                 .NonLazy();
 
             Container
-                .Bind<AsteroidDestructionService>()
+                .BindInterfacesAndSelfTo<AsteroidDestructionService>()
                 .AsSingle()
                 .NonLazy();
         }

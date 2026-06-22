@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 
 namespace Tools.Runtime
 {
-    public class ScreenEdgeTool : IInitializable
+    public class ScreenEdgeTool
     {
         private float _minX, _maxX, _minY, _maxY;
         
@@ -14,15 +14,10 @@ namespace Tools.Runtime
         public float MinY => _minY;
         public float MaxY => _maxY;
 
-        public void Initialize()
+        public ScreenEdgeTool(Camera camera)
         {
-            Camera cam = Camera.main;
-
-            if (cam is null)
-                return;
-
-            Vector3 bottomLeft = cam.ViewportToWorldPoint(new Vector3(0, 0, 0));
-            Vector3 topRight = cam.ViewportToWorldPoint(new Vector3(1, 1, 0));
+            Vector3 bottomLeft = camera.ViewportToWorldPoint(new Vector3(0, 0, 0));
+            Vector3 topRight = camera.ViewportToWorldPoint(new Vector3(1, 1, 0));
 
             _minX = bottomLeft.x;
             _minY = bottomLeft.y;

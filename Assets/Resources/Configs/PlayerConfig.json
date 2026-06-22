@@ -14,20 +14,20 @@
     "Bounciness": 2.0,
     "Gravity": 1.0
   },
-  "Health": {
+  "HealthConfig": {
     "MaxHealth": 3
   },
   "KnockbackDuration": 3.0,
   "KnockbackGravityScale": 0.15,
-  "Gun": {
+  "GunConfig": {
     "GunCooldown": 0.2
   },
-  "LaserAmmunition": {
+  "LaserAmmunitionConfig": {
     "MaxChargesAmount": 3,
-    "LaserReloadTime": 3.0
+    "ReloadTime": 3.0
   },
-  "Laser": {
-    "LaserCooldown": 1.0,
-    "LaserDuration": 0.2
+  "LaserConfig": {
+    "Cooldown": 1.0,
+    "Duration": 0.2
   }
 }

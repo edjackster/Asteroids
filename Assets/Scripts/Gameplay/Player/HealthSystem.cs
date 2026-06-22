@@ -37,13 +37,13 @@ namespace Gameplay.Player
 
         public HealthSystem(SignalBus signalBus,HealthConfig config)
         {
-            CurrentHealth = config.MaxHealth;
             _config = config;
             _signalBus = signalBus;
         }
 
         public void Initialize()
         {
+            CurrentHealth = MaxHealth;
             _signalBus.Subscribe<PlayerHitSignal>(TakeDamage);
         }
 

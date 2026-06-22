@@ -36,7 +36,7 @@ namespace Gameplay.Player.PlayerState
 
         public void Dispose()
         {
-            _healthSystem.HealthChanged += OnPlayerHit;
+            _healthSystem.HealthChanged -= OnPlayerHit;
             _timer.Completed -= EndUnconsciousness;
         }
 

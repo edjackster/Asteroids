@@ -8,11 +8,11 @@ namespace Gameplay.Configs
     public class PlayerConfig: IConfig
     {
         public PhysicsConfig PhysicsConfig = new();
-        public HealthConfig Health = new();
+        public HealthConfig HealthConfig = new();
         public float KnockbackDuration = 3;
         public float KnockbackGravityScale = 0.15f;
-        public GunConfig Gun = new();
-        public LaserAmmunitionConfig LaserAmmunition = new();
-        public LaserConfig Laser = new();
+        public GunConfig GunConfig = new();
+        public LaserAmmunitionConfig LaserAmmunitionConfig = new();
+        public LaserConfig LaserConfig = new();
     }
 }

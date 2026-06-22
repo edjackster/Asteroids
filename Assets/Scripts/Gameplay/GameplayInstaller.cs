@@ -31,10 +31,10 @@ namespace Gameplay
         
             var player = Container.Resolve<PlayerConfig>();
         
-            Container.Bind<HealthConfig>().FromInstance(player.Health).AsSingle();
-            Container.Bind<LaserAmmunitionConfig>().FromInstance(player.LaserAmmunition).AsSingle();
-            Container.Bind<LaserConfig>().FromInstance(player.Laser).AsSingle();
-            Container.Bind<GunConfig>().FromInstance(player.Gun).AsSingle();
+            Container.Bind<HealthConfig>().FromInstance(player.HealthConfig).AsSingle();
+            Container.Bind<LaserAmmunitionConfig>().FromInstance(player.LaserAmmunitionConfig).AsSingle();
+            Container.Bind<LaserConfig>().FromInstance(player.LaserConfig).AsSingle();
+            Container.Bind<GunConfig>().FromInstance(player.GunConfig).AsSingle();
         }
 
         private void BindConfig<T>()

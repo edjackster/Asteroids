@@ -1,4 +1,6 @@
-﻿namespace Core.StateMachine
+﻿using System;
+
+namespace Core.StateMachine
 {
     public class StateMachine<T> where T:IState
     {
@@ -6,9 +8,12 @@
 
         public void ChangeState(T newState)
         {
+            if (newState is null)
+                throw new ArgumentNullException("State cannot be null");
+            
             CurrentState?.Exit();
             CurrentState = newState;
-            CurrentState?.Enter();
+            CurrentState.Enter();
         }
     }
 }

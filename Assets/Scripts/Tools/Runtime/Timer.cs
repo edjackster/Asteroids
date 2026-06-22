@@ -10,7 +10,6 @@ namespace Tools.Runtime
         private CancellationTokenSource _cancellationTokenSource;
 
         public event Action Completed;
-        public event Action Canceled;
         public event Action<float> CountDown;
 
         public bool IsRunning { get; private set; }
@@ -19,9 +18,11 @@ namespace Tools.Runtime
         public void Start(float duration)
         {
             Cancel();
-
-            _cancellationTokenSource = new CancellationTokenSource();
-            Run(duration, _cancellationTokenSource.Token).Forget(OnError);
+            
+            var cancellationTokenSource = new CancellationTokenSource();
+            _cancellationTokenSource = cancellationTokenSource;
+            
+            Run(duration, _cancellationTokenSource.Token, cancellationTokenSource).Forget(OnError);
         }
 
         public void Cancel()
@@ -31,7 +32,7 @@ namespace Tools.Runtime
             ClearTimerState();
         }
 
-        private async UniTask Run(float duration, CancellationToken token)
+        private async UniTask Run(float duration, CancellationToken token, CancellationTokenSource cancellationTokenSource)
         {
             IsRunning = true;
             RemainingTime = duration;
@@ -52,13 +53,17 @@ namespace Tools.Runtime
             }
             catch (OperationCanceledException)
             {
-                Canceled?.Invoke();
+                return;
             }
             finally
             {
-                ClearTimerState();
+                if (_cancellationTokenSource == cancellationTokenSource)
+                    ClearTimerState();
+                else
+                    cancellationTokenSource.Dispose();
             }
         
+            IsRunning = false;
             Completed?.Invoke();
         }
 
@@ -71,7 +76,6 @@ namespace Tools.Runtime
         private void OnError(Exception error)
         {
             Debug.LogError(error);
-            Canceled?.Invoke();
         }
     }
 }

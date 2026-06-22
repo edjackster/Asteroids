@@ -87,13 +87,13 @@ namespace Core.Advertisement
             };
         }
     
-        private async UniTaskVoid OnAdFullScreenContentClosed()
+        private async UniTask OnAdFullScreenContentClosed()
         {
             await UniTask.Yield();
             _signalBus.Fire(new AdEndSignal());
         }
     
-        private async UniTaskVoid OnAdFullScreenContentFailed()
+        private async UniTask OnAdFullScreenContentFailed()
         {
             await UniTask.Yield();
             _signalBus.Fire(new AdFailedSignal());
